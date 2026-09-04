@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>八哥隊長的外來種互動繪本展覽館</title>
+<style>
+  :root{
+    --ink:#273444;
+    --paper:#fffdf7;
+    --cream:#fff6da;
+    --yellow:#ffd85a;
+    --orange:#ff9f43;
+    --green:#63c174;
+    --blue:#6fc8ff;
+    --purple:#a88bf0;
+    --pink:#ff7fa7;
+    --shadow:0 14px 35px rgba(44,62,80,.16);
+    --radius:28px;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;min-height:100%;font-family:"Noto Sans TC","Microsoft JhengHei",system-ui,sans-serif;color:var(--ink)}
+  body{
+    min-height:100vh;
+    overflow-x:hidden;
+    background:
+      radial-gradient(circle at 10% 10%, rgba(255,255,255,.95) 0 70px, transparent 72px),
+      radial-gradient(circle at 90% 12%, rgba(255,255,255,.7) 0 90px, transparent 92px),
+      linear-gradient(180deg,#83d9ff 0%,#b8edff 42%,#dff8d0 42%,#c8efbb 100%);
+  }
+  body:before,body:after{
+    content:"";position:fixed;inset:auto;z-index:-1;border-radius:50%;
+    background:rgba(255,255,255,.35);filter:blur(1px);
+  }
+  body:before{width:200px;height:90px;left:-35px;top:150px}
+  body:after{width:250px;height:105px;right:-50px;bottom:160px}
+  .app{max-width:1180px;margin:auto;padding:18px 18px 36px}
+  header{
+    display:flex;align-items:center;justify-content:space-between;gap:14px;
+    padding:12px 6px 18px;
+  }
+  .brand{display:flex;align-items:center;gap:12px}
+  .brand-badge{
+    width:62px;height:62px;border-radius:20px;background:var(--yellow);
+    display:grid;place-items:center;font-size:34px;box-shadow:0 8px 0 #e4ae22,0 12px 24px rgba(0,0,0,.1);
+    transform:rotate(-4deg)
+  }
+  .brand h1{font-size:clamp(22px,4vw,34px);margin:0;font-weight:900;letter-spacing:.5px}
+  .brand p{margin:4px 0 0;font-weight:700;color:#476074}
+  .help-btn{
+    border:0;background:#fff;padding:12px 16px;border-radius:18px;font-weight:900;
+    box-shadow:0 7px 0 #d9e2ea;cursor:pointer;font-size:15px
+  }
+  .top-strip{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}
+  .page-pill{
+    background:rgba(255,255,255,.88);padding:10px 16px;border-radius:999px;font-weight:900;
+    box-shadow:0 8px 18px rgba(38,76,98,.09)
+  }
+  .progress{flex:1;max-width:520px;height:13px;background:rgba(255,255,255,.55);border-radius:999px;overflow:hidden}
+  .progress > span{display:block;height:100%;width:12.5%;border-radius:999px;background:linear-gradient(90deg,#ffd85a,#ff9f43);transition:width .35s ease}
+  .stage{
+    position:relative;
+    background:linear-gradient(180deg,rgba(255,255,255,.88),rgba(255,253,247,.98));
+    border-radius:34px;box-shadow:var(--shadow);padding:20px;
+    min-height:680px;display:flex;align-items:center;justify-content:center;
+    overflow:hidden
+  }
+  .stage:before{
+    content:"";position:absolute;width:300px;height:300px;border-radius:50%;
+    background:rgba(255,216,90,.2);left:-90px;top:-100px
+  }
+  .stage:after{
+    content:"";position:absolute;width:220px;height:220px;border-radius:50%;
+    background:rgba(111,200,255,.18);right:-50px;bottom:-55px
+  }
+  .book{width:min(100%,1000px);position:relative;z-index:2}
+  .scene{
+    display:grid;grid-template-columns:minmax(300px,1.15fr) minmax(260px,.85fr);
+    gap:22px;align-items:stretch
+  }
+  .illustration{
+    position:relative;min-height:520px;border-radius:30px;padding:18px;
+    overflow:hidden;display:flex;flex-direction:column;justify-content:space-between;
+    background:linear-gradient(180deg,var(--sky1,#c9f2ff),var(--sky2,#eafcff));
+    box-shadow:inset 0 -12px 0 rgba(0,0,0,.04);
+  }
+  .illustration .sun{width:74px;height:74px;border-radius:50%;background:#ffe37a;position:absolute;top:26px;right:28px;box-shadow:0 0 0 12px rgba(255,227,122,.2)}
+  .cloud{position:absolute;background:rgba(255,255,255,.82);border-radius:50px;width:120px;height:30px;filter:drop-shadow(0 5px 5px rgba(0,0,0,.05))}
+  .cloud:before,.cloud:after{content:"";position:absolute;background:inherit;border-radius:50%}
+  .cloud:before{width:45px;height:45px;left:15px;top:-18px}
+  .cloud:after{width:54px;height:54px;right:16px;top:-25px}
+  .cloud.c1{left:-10px;top:70px}.cloud.c2{right:-30px;top:165px;transform:scale(.8)}
+  .land{position:absolute;left:-5%;right:-5%;bottom:-25px;height:170px;background:linear-gradient(180deg,#8bd47d,#55b866);border-radius:50% 50% 0 0/30% 30% 0 0}
+  .water{position:absolute;left:-5%;right:-5%;bottom:-30px;height:185px;background:linear-gradient(180deg,#79d8f5,#46b8df);border-radius:50% 50% 0 0/25% 25% 0 0}
+  .plant{position:absolute;bottom:85px;left:30px;font-size:50px;transform:rotate(-6deg)}
+  .badge{
+    display:inline-flex;align-items:center;gap:8px;align-self:flex-start;
+    background:rgba(255,255,255,.9);padding:9px 13px;border-radius:14px;font-size:14px;font-weight:900;z-index:2
+  }
+  .name-large{position:relative;z-index:2;max-width:74%;margin-top:auto}
+  .name-large h2{font-size:clamp(32px,6vw,58px);line-height:1;margin:0 0 10px;font-weight:1000;letter-spacing:1px}
+  .name-large .latin{font-size:14px;font-weight:700;opacity:.72}
+  canvas{
+    width:min(100%,380px);height:320px;display:block;position:absolute;z-index:2;
+    left:50%;top:50%;transform:translate(-50%,-55%);
+    filter:drop-shadow(0 18px 14px rgba(0,0,0,.13));
+    cursor:pointer
+  }
+  .tip-bubble{
+    position:absolute;z-index:5;left:26px;bottom:24px;background:#fff;
+    padding:12px 15px;border-radius:18px;font-weight:900;font-size:14px;
+    box-shadow:0 9px 24px rgba(0,0,0,.12);max-width:78%
+  }
+  .content-card{
+    background:var(--paper);border-radius:30px;padding:24px;display:flex;flex-direction:column;
+    box-shadow:0 10px 25px rgba(50,70,90,.12);min-height:520px
+  }
+  .warning{
+    position:relative;background:#fff3c3;border:3px solid #ffd85a;border-radius:22px;padding:16px 16px 14px 60px;
+    font-weight:900;line-height:1.6;margin-bottom:16px
+  }
+  .warning .captain{position:absolute;left:12px;top:10px;width:38px;height:38px;border-radius:12px;background:#222;color:#fff;display:grid;place-items:center;font-size:22px}
+  .warning:after{content:"";position:absolute;left:35px;bottom:-11px;width:19px;height:19px;background:#fff3c3;border-right:3px solid #ffd85a;border-bottom:3px solid #ffd85a;transform:rotate(45deg)}
+  .feature-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:4px}
+  .fact{background:#f6fafc;border-radius:18px;padding:14px}
+  .fact b{display:block;font-size:13px;color:#6d8190;margin-bottom:6px}
+  .fact strong{font-size:21px;line-height:1.45}
+  .harm{background:#fff0f4}
+  .actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:auto;padding-top:15px}
+  .action-btn{
+    border:0;border-radius:18px;padding:13px 10px;font-size:15px;font-weight:1000;cursor:pointer;
+    box-shadow:0 6px 0 rgba(35,50,65,.14);transition:.16s transform
+  }
+  .action-btn:active{transform:translateY(5px);box-shadow:0 1px 0 rgba(35,50,65,.14)}
+  .observe{background:#d9f2ff}.sound{background:#ffe3a8}
+  .nav{
+    display:grid;grid-template-columns:1fr auto 1fr;gap:14px;align-items:center;margin-top:18px
+  }
+  .nav-btn{
+    border:0;border-radius:22px;min-height:72px;padding:12px 18px;font-size:20px;font-weight:1000;
+    background:#fff;box-shadow:0 9px 0 #d8e2e8;cursor:pointer
+  }
+  .nav-btn.next{background:#ffd85a;box-shadow:0 9px 0 #e0b32b}
+  .nav-btn:disabled{opacity:.45;cursor:not-allowed}
+  .book-dots{display:flex;gap:7px;align-items:center;justify-content:center}
+  .book-dots span{width:11px;height:11px;border-radius:50%;background:#cad7de;transition:.2s}
+  .book-dots span.on{width:26px;border-radius:999px;background:#ff9f43}
+  .captain-fixed{
+    position:fixed;right:24px;bottom:22px;z-index:30;width:120px;text-align:center;
+    user-select:none
+  }
+  .captain-wrap{position:relative;display:inline-block}
+  .captain{
+    width:88px;height:88px;border-radius:30px;background:#1f2429;color:#fff;
+    display:grid;place-items:center;font-size:52px;border:5px solid #fff;
+    box-shadow:0 11px 0 rgba(0,0,0,.12);cursor:pointer;transition:.16s transform;
+  }
+  .captain:hover{transform:translateY(-4px) rotate(-3deg)}
+  .captain.jump{animation:captainJump .6s ease}
+  @keyframes captainJump{0%,100%{transform:translateY(0) rotate(0)}35%{transform:translateY(-34px) rotate(-8deg)}65%{transform:translateY(-16px) rotate(8deg)}}
+  .speech{
+    position:absolute;right:72px;bottom:73px;width:230px;background:#fff;border-radius:20px;padding:12px 14px;
+    box-shadow:0 11px 28px rgba(0,0,0,.15);font-size:14px;font-weight:900;line-height:1.55;
+    opacity:0;transform:scale(.9) translateY(10px);pointer-events:none;transition:.2s
+  }
+  .speech.show{opacity:1;transform:scale(1) translateY(0)}
+  .speech:after{content:"";position:absolute;right:-10px;bottom:20px;border-width:10px 0 10px 12px;border-style:solid;border-color:transparent transparent transparent #fff}
+  .overlay{position:fixed;inset:0;background:rgba(24,40,52,.44);backdrop-filter:blur(5px);z-index:40;display:none;align-items:center;justify-content:center;padding:20px}
+  .overlay.show{display:flex}
+  .modal{width:min(760px,100%);background:#fffdf6;border-radius:28px;padding:24px;box-shadow:0 30px 80px rgba(0,0,0,.25)}
+  .modal h3{margin:0 0 10px;font-size:28px}
+  .close{border:0;float:right;border-radius:12px;background:#edf3f5;padding:8px 12px;cursor:pointer;font-weight:900}
+  .lens{
+    position:absolute;z-index:12;width:150px;height:150px;border:10px solid rgba(255,255,255,.95);
+    border-radius:50%;box-shadow:0 0 0 5px rgba(32,48,63,.2),0 16px 30px rgba(0,0,0,.25);
+    pointer-events:none;display:none;overflow:hidden;background:rgba(255,255,255,.1)
+  }
+  .lens:after{content:"";position:absolute;right:-42px;bottom:-42px;width:75px;height:75px;border-radius:12px 40px 10px 40px;background:rgba(255,255,255,.92);transform:rotate(25deg)}
+  .lens.show{display:block;animation:lensIn .28s ease}
+  @keyframes lensIn{from{transform:scale(.5);opacity:0}to{transform:scale(1);opacity:1}}
+  .quiz-btn{
+    margin-top:10px;border:0;border-radius:15px;background:#dff5e1;padding:11px;font-weight:1000;cursor:pointer
+  }
+  .toast{
+    position:fixed;left:50%;bottom:30px;transform:translateX(-50%) translateY(30px);
+    background:#273444;color:#fff;padding:12px 18px;border-radius:999px;font-weight:800;z-index:70;opacity:0;pointer-events:none;transition:.25s
+  }
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+  @keyframes creatureWiggle{0%,100%{transform:translate(-50%,-55%) rotate(0)}25%{transform:translate(-50%,-55%) rotate(-7deg)}50%{transform:translate(-50%,-55%) rotate(7deg)}75%{transform:translate(-50%,-55%) rotate(-4deg)}}
+  canvas.wiggle{animation:creatureWiggle .7s ease}
+  @media (max-width:900px){
+    .stage{padding:13px;min-height:720px}
+    .scene{grid-template-columns:1fr}
+    .illustration{min-height:430px}
+    .content-card{min-height:auto}
+    canvas{height:280px}
+    .captain-fixed{right:10px;bottom:10px}
+    .speech{right:56px;width:205px}
+  }
+  @media (max-width:560px){
+    .app{padding:10px 10px 26px}
+    header{align-items:flex-start}
+    .brand-badge{width:50px;height:50px;font-size:28px}
+    .brand p{font-size:12px}
+    .help-btn{font-size:12px;padding:9px 11px}
+    .top-strip{flex-direction:column;align-items:stretch}
+    .progress{max-width:none}
+    .illustration{min-height:390px}
+    canvas{height:240px}
+    .content-card{padding:16px}
+    .feature-grid{grid-template-columns:1fr}
+    .actions{grid-template-columns:1fr}
+    .nav-btn{min-height:62px;font-size:16px;padding:10px 12px}
+    .book-dots{display:none}
+    .captain-fixed{width:82px}
+    .captain-fixed .captain{width:64px;height:64px;font-size:37px;border-width:4px}
+    .speech{right:42px;bottom:55px;width:180px;font-size:12px}
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div class="brand">
+      <div class="brand-badge">🦜</div>
+      <div>
+        <h1>八哥隊長的外來種探險</h1>
+        <p>翻一頁、認識一位新朋友！🌱</p>
+      </div>
+    </div>
+    <button class="help-btn" id="helpBtn">📖 怎麼玩？</button>
+  </header>
+
+  <div class="top-strip">
+    <div class="page-pill" id="pageLabel">第 1 / 8 頁</div>
+    <div class="progress" aria-label="閱讀進度"><span id="progressBar"></span></div>
+  </div>
+
+  <main class="stage" id="stage">
+    <div class="book">
+      <div class="scene">
+        <section class="illustration" id="illustration">
+          <div class="sun"></div>
+          <div class="cloud c1"></div><div class="cloud c2"></div>
+          <div class="badge" id="categoryBadge">☁️ 天上飛</div>
+          <canvas id="creatureCanvas" width="760" height="640" title="點我觀察"></canvas>
+          <div class="land" id="land"></div>
+          <div class="water" id="water" style="display:none"></div>
+          <div class="plant" id="plant">🌿</div>
+          <div class="name-large">
+            <h2 id="creatureName">埃及聖䴉</h2>
+            <div class="latin" id="pageHint">點擊圖畫，打開放大鏡！</div>
+          </div>
+          <div class="tip-bubble">🔎 小提示：先找找看牠最特別的地方！</div>
+          <div class="lens" id="lens"></div>
+        </section>
+
+        <section class="content-card">
+          <div class="warning" id="warningBox">
+            <div class="captain">🦜</div>
+            <div id="warningText">大家注意！牠嘴巴像大彎刀，會搶走本土鳥類的巢喔！</div>
+          </div>
+
+          <div class="feature-grid">
+            <div class="fact">
+              <b>👀 我看到的</b>
+              <strong id="featureText">鐮刀般的彎嘴</strong>
+            </div>
+            <div class="fact harm">
+              <b>⚠️ 可能的麻煩</b>
+              <strong id="harmText">搶本土鳥類的巢</strong>
+            </div>
+          </div>
+
+          <button class="quiz-btn" id="miniQuizBtn">⭐ 小小挑戰：找出關鍵特徵</button>
+
+          <div class="actions">
+            <button class="action-btn observe" id="observeBtn">🔍 觀察特徵</button>
+            <button class="action-btn sound" id="soundBtn">🔊 聽叫聲 / 音效</button>
+          </div>
+        </section>
+      </div>
+
+      <nav class="nav">
+        <button class="nav-btn" id="prevBtn">← 上一步</button>
+        <div class="book-dots" id="bookDots"></div>
+        <button class="nav-btn next" id="nextBtn">下一步 →</button>
+      </nav>
+    </div>
+  </main>
+</div>
+
+<div class="captain-fixed">
+  <div class="speech" id="captainSpeech">小探險家，點我一下！我會跟你打招呼喔～</div>
+  <div class="captain" id="captainBtn" title="點我聽八哥隊長說話">🦜</div>
+</div>
+
+<div class="overlay" id="helpOverlay">
+  <div class="modal">
+    <button class="close" id="closeHelp">✕</button>
+    <h3>🧭 探險方法</h3>
+    <p style="font-size:18px;line-height:1.8;font-weight:800">
+      ① 按「下一步」像翻繪本一樣認識生物。<br>
+      ② 點「🔍 觀察特徵」看放大鏡。<br>
+      ③ 按「🔊 聽叫聲 / 音效」看看牠會怎麼動！<br>
+      ④ 點右下角的八哥隊長，牠會跳起來跟你打招呼！
+    </p>
+    <p style="background:#fff3c3;border-radius:18px;padding:14px;font-weight:900">
+      💡 小提醒：這些生物不一定「壞」，但當牠們來到不熟悉的地方，可能會影響原本的生態。
+    </p>
+  </div>
+</div>
+
+<div class="toast" id="toast">🎉 觀察成功！你找到重點了！</div>
+
+<script>
+"use strict";
+
+const DATA = [
+  {
+    name:"埃及聖䴉", category:"天上飛", icon:"🪽",
+    feature:"鐮刀般的彎嘴", harm:"搶本土鳥類的巢",
+    warning:"大家注意！牠嘴巴像大彎刀，可能會和本土鳥類爭奪巢位喔！",
+    color1:"#bdeaff", color2:"#e9fbff", scene:"sky", accent:"#5ea9db",
+    sound:{freqs:[680,920,760], type:"triangle", duration:.14}
+  },
+  {
+    name:"荔枝椿象", category:"天上飛", icon:"🪲",
+    feature:"會放出臭臭液體", harm:"吸果樹汁液，傷害植物",
+    warning:"注意！遇到危險時，牠會放出臭臭的液體，而且會吸植物的汁液！",
+    color1:"#d8f4ff", color2:"#f1fff7", scene:"leaf", accent:"#7a9d57",
+    sound:{freqs:[260,220,310], type:"square", duration:.11}
+  },
+  {
+    name:"綠鬣蜥", category:"地上爬", icon:"🦎",
+    feature:"像小恐龍、長尾巴", harm:"吃農作物，也可能破壞堤防",
+    warning:"大家注意！牠像一隻小恐龍，尾巴超長，還會吃農作物、挖土喔！",
+    color1:"#d7f7c9", color2:"#efffe8", scene:"land", accent:"#5cae55",
+    sound:{freqs:[180,150,210], type:"sawtooth", duration:.16}
+  },
+  {
+    name:"斑腿樹蛙", category:"地上爬", icon:"🐸",
+    feature:"腿上有斑紋", harm:"搶本土青蛙的食物與家",
+    warning:"看看牠的腿！上面有漂亮斑紋，但可能和本土青蛙搶食物與住的地方。",
+    color1:"#d9f9d3", color2:"#eaf9ff", scene:"frog", accent:"#74aa52",
+    sound:{freqs:[230,190,250], type:"sine", duration:.2}
+  },
+  {
+    name:"紅火蟻", category:"地上爬", icon:"🐜",
+    feature:"小紅蟻、毒針", harm:"叮咬會讓人紅腫疼痛",
+    warning:"小心！牠身體小小的，卻有防禦用的針，碰到時要請大人幫忙處理。",
+    color1:"#ffe9d5", color2:"#fff8ee", scene:"ant", accent:"#e05d4c",
+    sound:{freqs:[120,150,115,165], type:"square", duration:.08}
+  },
+  {
+    name:"福壽螺", category:"水裡游", icon:"🐌",
+    feature:"粉紅色卵塊", harm:"吃掉水稻幼苗",
+    warning:"大家找找看！田邊常可看到粉紅色卵塊，牠喜歡吃嫩嫩的水稻幼苗。",
+    color1:"#bdeeff", color2:"#eafff7", scene:"water", accent:"#e68a9e",
+    sound:{freqs:[330,420,300], type:"sine", duration:.19}
+  },
+  {
+    name:"吳郭魚", category:"水裡游", icon:"🐟",
+    feature:"適應力超強", harm:"可能吃掉原生小魚小蝦",
+    warning:"牠很會適應不同環境！如果數量太多，就可能影響原本的小魚小蝦。",
+    color1:"#bfe8ff", color2:"#e8f8ff", scene:"fish", accent:"#4f9dbe",
+    sound:{freqs:[420,540,390,580], type:"triangle", duration:.1}
+  },
+  {
+    name:"小花蔓澤蘭", category:"植物類", icon:"🌿",
+    feature:"綠色藤蔓", harm:"蓋住其他植物，搶走陽光",
+    warning:"這種藤蔓長得很快，會爬到別的植物上，把陽光擋住，像植物殺手一樣！",
+    color1:"#d7f8d6", color2:"#f6ffe6", scene:"vine", accent:"#59a65d",
+    sound:{freqs:[260,330,410,520], type:"sine", duration:.16}
+  }
+];
+
+let index = 0;
+let audioCtx = null;
+
+const $ = id => document.getElementById(id);
+const canvas = $("creatureCanvas");
+const ctx = canvas.getContext("2d");
+
+function roundRectPath(c,x,y,w,h,r){
+  const rr=Math.min(r,w/2,h/2);
+  c.beginPath();
+  c.moveTo(x+rr,y);
+  c.arcTo(x+w,y,x+w,y+h,rr);
+  c.arcTo(x+w,y+h,x,y+h,rr);
+  c.arcTo(x,y+h,x,y,rr);
+  c.arcTo(x,y,x+w,y,rr);
+  c.closePath();
+}
+function fillCircle(x,y,r,color){
+  ctx.fillStyle=color;ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.fill();
+}
+function drawText(t,x,y,size,color="#273444",weight="900",align="center"){
+  ctx.fillStyle=color;ctx.font=`${weight} ${size}px "Noto Sans TC","Microsoft JhengHei",sans-serif`;
+  ctx.textAlign=align;ctx.textBaseline="middle";ctx.fillText(t,x,y);
+}
+
+function drawBaseScene(d){
+  const w=canvas.width,h=canvas.height;
+  ctx.clearRect(0,0,w,h);
+  ctx.save();
+  // small decorative sparkles
+  for(let i=0;i<7;i++){
+    const x=70+(i*103)%600, y=70+(i*67)%370;
+    ctx.fillStyle="rgba(255,255,255,.75)";
+    ctx.beginPath();ctx.arc(x,y,5,0,Math.PI*2);ctx.fill();
+  }
+  // title plate
+  roundRectPath(ctx,32,28,w-64,56,18);
+  ctx.fillStyle="rgba(255,255,255,.78)";ctx.fill();
+  drawText(d.icon+"  "+d.category, w/2, 56, 22, "#45606d");
+  ctx.restore();
+}
+
+function drawBird(d){
+  drawBaseScene(d);
+  const x=380,y=330;
+  ctx.save();
+  // body
+  fillCircle(x,y,95,"#4a5865");
+  fillCircle(x-8,y-48,64,"#5f7180");
+  // head
+  fillCircle(x+28,y-105,50,"#646f7b");
+  // eye
+  fillCircle(x+44,y-116,11,"#fff");
+  fillCircle(x+46,y-116,5,"#222");
+  // long curved beak
+  ctx.strokeStyle="#e8b35a";ctx.lineWidth=19;ctx.lineCap="round";
+  ctx.beginPath();ctx.moveTo(x+67,y-96);ctx.quadraticCurveTo(x+140,y-40,x+122,y+32);ctx.stroke();
+  // neck highlight
+  ctx.strokeStyle="#8b9ba5";ctx.lineWidth=16;
+  ctx.beginPath();ctx.moveTo(x-5,y-85);ctx.quadraticCurveTo(x-25,y-40,x-12,y+8);ctx.stroke();
+  // wing
+  ctx.fillStyle="#394754";
+  ctx.beginPath();ctx.ellipse(x-55,y,48,82,-.35,0,Math.PI*2);ctx.fill();
+  // feet
+  ctx.strokeStyle="#efbc55";ctx.lineWidth=9;
+  for(const px of [x-20,x+25]){ctx.beginPath();ctx.moveTo(px,y+79);ctx.lineTo(px-5,y+118);ctx.lineTo(px-23,y+125);ctx.moveTo(px-5,y+118);ctx.lineTo(px+10,y+127);ctx.stroke()}
+  drawText("↘ 彎嘴",x+112,y+125,18,"#7c5a20","1000");
+  ctx.restore();
+}
+
+function drawBug(d){
+  drawBaseScene(d);
+  const x=380,y=330;
+  ctx.save();
+  // body
+  ctx.fillStyle="#715e51";ctx.beginPath();ctx.ellipse(x,y,90,115,0,0,Math.PI*2);ctx.fill();
+  ctx.fillStyle="#8b755f";ctx.beginPath();ctx.ellipse(x,y-65,74,56,0,0,Math.PI*2);ctx.fill();
+  // geometric back
+  ctx.strokeStyle="#5a4a40";ctx.lineWidth=6;
+  ctx.beginPath();ctx.moveTo(x-72,y-65);ctx.lineTo(x,y+22);ctx.lineTo(x+72,y-65);ctx.moveTo(x-90,y+15);ctx.lineTo(x+90,y+15);ctx.stroke();
+  // antennae
+  ctx.strokeStyle="#4b423a";ctx.lineWidth=7;
+  for(const dir of [-1,1]){
+    ctx.beginPath();ctx.moveTo(x+dir*30,y-105);ctx.quadraticCurveTo(x+dir*100,y-155,x+dir*122,y-110);ctx.stroke();
+  }
+  // legs
+  ctx.strokeStyle="#4b423a";ctx.lineWidth=8;
+  for(let i=-1;i<=1;i++){
+    ctx.beginPath();ctx.moveTo(x-58,y+i*44);ctx.lineTo(x-118,y+i*62);ctx.moveTo(x+58,y+i*44);ctx.lineTo(x+118,y+i*62);ctx.stroke();
+  }
+  roundRectPath(ctx,x+115,y-34,82,50,15);ctx.fillStyle="#fff";ctx.fill();
+  drawText("噗～臭臭！",x+156,y-8,15,"#6c5345","1000");
+  ctx.restore();
+}
+
+function drawIguana(d){
+  drawBaseScene(d);
+  const x=370,y=350;
+  ctx.save();
+  // tail
+  ctx.strokeStyle="#579b57";ctx.lineWidth=35;ctx.lineCap="round";
+  ctx.beginPath();ctx.moveTo(x-70,y+35);ctx.quadraticCurveTo(x-230,y+120,x-270,y-5);ctx.stroke();
+  // body
+  ctx.fillStyle="#69b65c";ctx.beginPath();ctx.ellipse(x,y,120,75,.1,0,Math.PI*2);ctx.fill();
+  // head
+  fillCircle(x+95,y-20,55,"#72c865");
+  // dorsal spikes
+  ctx.fillStyle="#4e9b54";
+  for(let i=0;i<8;i++){const px=x-65+i*22;ctx.beginPath();ctx.moveTo(px,y-60);ctx.lineTo(px+9,y-96);ctx.lineTo(px+18,y-58);ctx.closePath();ctx.fill();}
+  // eye
+  fillCircle(x+116,y-36,12,"#fff");fillCircle(x+118,y-36,5,"#222");
+  // leg
+  for(const px of [x-65,x+38]){
+    ctx.strokeStyle="#4e9b54";ctx.lineWidth=18;ctx.beginPath();ctx.moveTo(px,y+44);ctx.lineTo(px-8,y+102);ctx.stroke();
+    ctx.fillStyle="#3e8046";ctx.fillRect(px-28,y+96,45,12);
+  }
+  drawText("像小恐龍！",x,y-155,22,"#3f7d3f","1000");
+  ctx.restore();
+}
+
+function drawFrog(d){
+  drawBaseScene(d);
+  const x=380,y=355;
+  ctx.save();
+  fillCircle(x,y,88,"#6dbf64");
+  fillCircle(x-82,y-28,34,"#7bd46e");fillCircle(x+82,y-28,34,"#7bd46e");
+  fillCircle(x-35,y-78,24,"#fff");fillCircle(x+35,y-78,24,"#fff");
+  fillCircle(x-35,y-78,10,"#222");fillCircle(x+35,y-78,10,"#222");
+  // legs
+  for(const dir of [-1,1]){
+    ctx.strokeStyle="#58a853";ctx.lineWidth=26;ctx.beginPath();ctx.moveTo(x+dir*55,y+50);ctx.lineTo(x+dir*120,y+116);ctx.stroke();
+    ctx.strokeStyle="#a76c7d";ctx.lineWidth=11;
+    for(let i=0;i<5;i++){ctx.beginPath();ctx.moveTo(x+dir*(86+i*7),y+84+i*6);ctx.lineTo(x+dir*(98+i*7),y+76+i*6);ctx.stroke()}
+  }
+  // smile
+  ctx.strokeStyle="#315c38";ctx.lineWidth=7;ctx.beginPath();ctx.arc(x,y+4,42,0.15*Math.PI,0.85*Math.PI);ctx.stroke();
+  drawText("找斑紋！",x,y+145,22,"#496b43","1000");
+  ctx.restore();
+}
+
+function drawAnt(d){
+  drawBaseScene(d);
+  const x=380,y=365;
+  ctx.save();
+  const parts=[[-75,0,55],[0,0,65],[75,0,54]];
+  for(const [dx,_,r] of parts) fillCircle(x+dx,y,r,"#d94e42");
+  ctx.strokeStyle="#7e302d";ctx.lineWidth=8;
+  // legs
+  for(const dir of [-1,1]){
+    for(let i=-1;i<=1;i++){
+      ctx.beginPath();ctx.moveTo(x+dir*(15+i*42),y+15);ctx.lineTo(x+dir*(70+i*42),y+62+i*8);ctx.stroke();
+    }
+  }
+  // antenna
+  ctx.beginPath();ctx.moveTo(x-105,y-10);ctx.quadraticCurveTo(x-155,y-80,x-175,y-40);ctx.moveTo(x-105,y+15);ctx.quadraticCurveTo(x-155,y-25,x-180,y+5);ctx.stroke();
+  ctx.strokeStyle="#ffcd6f";ctx.lineWidth=8;
+  ctx.beginPath();ctx.moveTo(x+126,y-12);ctx.lineTo(x+173,y-55);ctx.stroke();
+  drawText("小小的，也要小心！",x,y+140,19,"#8d3732","1000");
+  ctx.restore();
+}
+
+function drawSnail(d){
+  drawBaseScene(d);
+  const x=370,y=365;
+  ctx.save();
+  // water grass
+  ctx.strokeStyle="#54a86a";ctx.lineWidth=10;
+  for(let i=0;i<9;i++){ctx.beginPath();ctx.moveTo(40+i*85,520);ctx.lineTo(55+i*85,455-(i%3)*16);ctx.stroke()}
+  // shell
+  fillCircle(x-35,y-5,95,"#d88092");
+  ctx.strokeStyle="#a95b70";ctx.lineWidth=12;
+  ctx.beginPath();ctx.arc(x-35,y-5,58,0,Math.PI*1.75);ctx.stroke();
+  // body
+  ctx.fillStyle="#e6a792";ctx.beginPath();ctx.ellipse(x+85,y+58,130,42,0,0,Math.PI*2);ctx.fill();
+  // head
+  fillCircle(x+170,y+35,40,"#edae98");
+  ctx.strokeStyle="#c47d6f";ctx.lineWidth=7;
+  ctx.beginPath();ctx.moveTo(x+168,y);ctx.lineTo(x+188,y-50);ctx.moveTo(x+192,y+5);ctx.lineTo(x+213,y-45);ctx.stroke();
+  fillCircle(x+188,y-51,7,"#222");fillCircle(x+213,y-46,7,"#222");
+  // eggs
+  for(let i=0;i<8;i++){fillCircle(530+i*21,170+(i%2)*8,10,"#ef95a7")}
+  drawText("粉紅色卵塊",615,132,18,"#9d4f63","1000");
+  ctx.restore();
+}
+
+function drawFish(d){
+  drawBaseScene(d);
+  const x=380,y=350;
+  ctx.save();
+  // bubbles
+  for(let i=0;i<7;i++){ctx.strokeStyle="rgba(255,255,255,.8)";ctx.lineWidth=5;ctx.beginPath();ctx.arc(110+i*75,170+(i%3)*48,10+(i%3)*4,0,Math.PI*2);ctx.stroke()}
+  // body
+  ctx.fillStyle="#4d9fc0";ctx.beginPath();ctx.ellipse(x,y,135,85,0,0,Math.PI*2);ctx.fill();
+  // stripes
+  ctx.strokeStyle="rgba(255,255,255,.55)";ctx.lineWidth=14;
+  for(let i=-2;i<=2;i++){ctx.beginPath();ctx.moveTo(x+i*37-15,y-70);ctx.lineTo(x+i*37+12,y+70);ctx.stroke()}
+  // tail
+  ctx.fillStyle="#6cc0db";ctx.beginPath();ctx.moveTo(x-120,y);ctx.lineTo(x-220,y-78);ctx.lineTo(x-200,y+80);ctx.closePath();ctx.fill();
+  // eye
+  fillCircle(x+80,y-25,14,"#fff");fillCircle(x+82,y-25,6,"#222");
+  // fin
+  ctx.fillStyle="#3b7f9d";ctx.beginPath();ctx.moveTo(x-15,y-70);ctx.lineTo(x+25,y-140);ctx.lineTo(x+58,y-60);ctx.closePath();ctx.fill();
+  drawText("適應力超強！",x+45,y+135,22,"#2f6f89","1000");
+  ctx.restore();
+}
+
+function drawVine(d){
+  drawBaseScene(d);
+  const x=390,y=360;
+  ctx.save();
+  // large vine
+  ctx.strokeStyle="#4eac5b";ctx.lineWidth=24;ctx.lineCap="round";
+  ctx.beginPath();ctx.moveTo(x-210,y+120);ctx.bezierCurveTo(x-80,y+60,x-140,y-120,x,y-40);ctx.bezierCurveTo(x+120,y+55,x+50,y+130,x+185,y+40);ctx.stroke();
+  // leaves
+  for(const p of [[-135,65],[-80,-5],[-25,-75],[65,-25],[95,65],[145,18]]){
+    const [dx,dy]=p;ctx.fillStyle="#67bd68";ctx.beginPath();ctx.ellipse(x+dx,y+dy,34,20,dx*.01,0,Math.PI*2);ctx.fill();
+  }
+  // covered tree
+  ctx.fillStyle="#855d43";ctx.fillRect(565,260,38,200);
+  for(let i=0;i<5;i++) fillCircle(584+(i%2)*24,235+i*48,48,"#4caa57");
+  drawText("會搶走陽光！",x,y+155,22,"#417b45","1000");
+  ctx.restore();
+}
+
+function drawCreature(d){
+  const map={ "sky":drawBird,"leaf":drawBug,"land":drawIguana,"frog":drawFrog,"ant":drawAnt,"water":drawSnail,"fish":drawFish,"vine":drawVine };
+  (map[d.scene]||drawBird)(d);
+}
+
+function updateUI(announce=true){
+  const d=DATA[index];
+  $("pageLabel").textContent=`第 ${index+1} / ${DATA.length} 頁`;
+  $("progressBar").style.width=((index+1)/DATA.length*100)+"%";
+  $("categoryBadge").textContent=(d.category==="天上飛"?"☁️":d.category==="水裡游"?"💧":d.category==="植物類"?"🌿":"🌳")+" "+d.category;
+  $("creatureName").textContent=d.name;
+  $("warningText").textContent=d.warning;
+  $("featureText").textContent=d.feature;
+  $("harmText").textContent=d.harm;
+  $("illustration").style.setProperty("--sky1",d.color1);
+  $("illustration").style.setProperty("--sky2",d.color2);
+  $("land").style.display=(d.scene==="sky"||d.scene==="leaf"||d.scene==="land"||d.scene==="frog"||d.scene==="ant"||d.scene==="vine")?"block":"none";
+  $("water").style.display=(d.scene==="water"||d.scene==="fish")?"block":"none";
+  $("plant").textContent=d.scene==="vine"?"🌱":d.scene==="water"||d.scene==="fish"?"🫧":"🌿";
+  $("nextBtn").disabled=index===DATA.length-1;
+  $("prevBtn").disabled=index===0;
+  [...$("bookDots").children].forEach((el,i)=>el.classList.toggle("on",i===index));
+  drawCreature(d);
+  if(announce) flashBook();
+}
+
+function flashBook(){
+  const book=document.querySelector(".book");
+  book.animate([{transform:"scale(.98)",opacity:.75},{transform:"scale(1)",opacity:1}],{duration:240,easing:"ease-out"});
+}
+
+function ensureAudio(){
+  if(!audioCtx) audioCtx = new (window.AudioContext||window.webkitAudioContext)();
+  if(audioCtx.state==="suspended") audioCtx.resume();
+}
+
+function playTone(freq,type,dur,startTime,gain=0.08){
+  const osc=audioCtx.createOscillator();
+  const g=audioCtx.createGain();
+  osc.type=type;osc.frequency.setValueAtTime(freq,startTime);
+  g.gain.setValueAtTime(0.0001,startTime);
+  g.gain.exponentialRampToValueAtTime(gain,startTime+0.015);
+  g.gain.exponentialRampToValueAtTime(0.0001,startTime+dur);
+  osc.connect(g).connect(audioCtx.destination);
+  osc.start(startTime);osc.stop(startTime+dur+0.03);
+}
+
+function creatureSound(){
+  const d=DATA[index]; ensureAudio();
+  let t=audioCtx.currentTime+0.02;
+  d.sound.freqs.forEach((f,i)=>{playTone(f,d.sound.type,d.sound.duration,t,0.07);t+=d.sound.duration*.82});
+  canvas.classList.remove("wiggle"); void canvas.offsetWidth; canvas.classList.add("wiggle");
+  toast("🔊 聲音出現啦！生物也動起來了！");
+}
+
+function captainSound(){
+  ensureAudio();
+  const t=audioCtx.currentTime;
+  [560,760,620,850].forEach((f,i)=>playTone(f,"triangle",.12,t+i*.12,.06));
+}
+
+function toast(msg){
+  $("toast").textContent=msg;$("toast").classList.add("show");
+  clearTimeout(toast.timer);toast.timer=setTimeout(()=>$("toast").classList.remove("show"),1800);
+}
+
+function showLens(){
+  const lens=$("lens");
+  lens.classList.add("show");
+  const rect=canvas.getBoundingClientRect(), parent=canvas.parentElement.getBoundingClientRect();
+  lens.style.left=(rect.left-parent.left+rect.width*.58-75)+"px";
+  lens.style.top=(rect.top-parent.top+rect.height*.30-75)+"px";
+  lens.style.background=`radial-gradient(circle at 58% 30%, rgba(255,255,255,.2), rgba(111,200,255,.25)), url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><text x='80' y='92' text-anchor='middle' font-size='64'>${encodeURIComponent(DATA[index].icon)}</text></svg>") center/cover`;
+  setTimeout(()=>lens.classList.remove("show"),1650);
+  toast(`🔍 放大觀察：${DATA[index].feature}`);
+}
+
+function captainTalk(){
+  const el=$("captainBtn");el.classList.remove("jump");void el.offsetWidth;el.classList.add("jump");
+  captainSound();
+  const s=$("captainSpeech");s.textContent=`🦜 「${DATA[index].warning.replace("大家注意！","")}」`;s.classList.add("show");
+  setTimeout(()=>s.classList.remove("show"),2600);
+}
+
+function miniQuiz(){
+  const d=DATA[index];
+  const answer=prompt(`🔎 小小挑戰！\n「${d.name}」最特別的地方是？\n\nA. ${d.feature}\nB. 天氣很好\n\n請輸入 A 或 B`);
+  if(answer && answer.trim().toUpperCase()==="A"){ toast("🎉 答對了！你真會觀察！"); }
+  else if(answer){ toast("🌟 再看看圖片上的提示，找找關鍵特徵！");
+  }
+}
+
+function initDots(){
+  $("bookDots").innerHTML=DATA.map((_,i)=>`<span class="${i===0?"on":""}"></span>`).join("");
+}
+
+$("prevBtn").addEventListener("click",()=>{ if(index>0){index--;updateUI()} });
+$("nextBtn").addEventListener("click",()=>{ if(index<DATA.length-1){index++;updateUI()} });
+$("observeBtn").addEventListener("click",showLens);
+$("creatureCanvas").addEventListener("click",showLens);
+$("soundBtn").addEventListener("click",creatureSound);
+$("captainBtn").addEventListener("click",captainTalk);
+$("miniQuizBtn").addEventListener("click",miniQuiz);
+
+$("helpBtn").addEventListener("click",()=>$("helpOverlay").classList.add("show"));
+$("closeHelp").addEventListener("click",()=>$("helpOverlay").classList.remove("show"));
+$("helpOverlay").addEventListener("click",(e)=>{if(e.target.id==="helpOverlay")$("helpOverlay").classList.remove("show")});
+
+document.addEventListener("keydown",(e)=>{
+  if(e.key==="ArrowRight") $("nextBtn").click();
+  if(e.key==="ArrowLeft") $("prevBtn").click();
+  if(e.key.toLowerCase()==="o") showLens();
+  if(e.key.toLowerCase()==="s") creatureSound();
+});
+
+initDots();
+updateUI(false);
+</script>
+</body>
+</html>
